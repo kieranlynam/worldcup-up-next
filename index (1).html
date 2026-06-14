@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Next Up · World Cup 2026</title>
+<meta name="description" content="Next England & South Korea World Cup games — UK time." />
+<meta name="theme-color" content="#161514" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#161514; --mut:#7c7a74; --line:#e6e4df; --bg:#f4f3ef; --card:#ffffff;
+    --win:oklch(0.55 0.09 150);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Archivo',system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    min-height:100vh;
+  }
+  .app{
+    max-width:440px; margin:0 auto; min-height:100vh;
+    padding:max(20px,env(safe-area-inset-top)) 0 calc(28px + env(safe-area-inset-bottom));
+    background:var(--bg);
+  }
+  .pad{padding-left:20px; padding-right:20px;}
+
+  header.app-head{display:flex; align-items:flex-end; justify-content:space-between; padding:8px 20px 4px;}
+  .h1{font-size:clamp(30px,9vw,38px); font-weight:900; letter-spacing:-.03em; line-height:.88; text-transform:uppercase; margin:0;}
+  .asof{font-size:11px; font-weight:600; color:var(--mut); text-transform:uppercase; letter-spacing:.08em; text-align:right; line-height:1.4; white-space:nowrap;}
+
+  .heroes{display:flex; flex-direction:column; gap:12px; padding:16px 16px 4px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px 16px 14px;}
+  .card.dark{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .card-top{display:flex; align-items:center; gap:11px;}
+  .flag{object-fit:cover; border-radius:5px; box-shadow:0 0 0 1px rgba(0,0,0,.12); display:block;}
+  .dark .flag{box-shadow:0 0 0 1px rgba(255,255,255,.25);}
+  .flag-lg{width:46px; height:33px;}
+  .flag-sm{width:24px; height:17px; border-radius:3px;}
+  .flag-xs{width:19px; height:14px; border-radius:2px;}
+  .team-block{display:flex; flex-direction:column; line-height:1; min-width:0;}
+  .team{font-size:21px; font-weight:800; letter-spacing:-.02em; text-transform:uppercase; white-space:nowrap;}
+  .grp{font-size:11px; font-weight:600; letter-spacing:.1em; color:var(--mut); margin-top:3px;}
+  .dark .grp{color:#a9a7a0;}
+  .countdown{margin-left:auto; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--mut); border:1.5px solid var(--line); border-radius:99px; padding:4px 9px; white-space:nowrap; text-align:center; line-height:1.15;}
+  .dark .countdown{border-color:rgba(255,255,255,.2); color:#cbc9c2;}
+  .when{display:flex; align-items:baseline; gap:10px; margin:14px 0 13px; white-space:nowrap;}
+  .day{font-size:clamp(33px,10.5vw,42px); font-weight:900; letter-spacing:-.045em; line-height:.82; text-transform:uppercase;}
+  .time{font-size:clamp(33px,10.5vw,42px); font-weight:500; letter-spacing:-.04em; line-height:.82; margin-left:auto;}
+  .time em{font-style:normal; font-size:13px; font-weight:700; vertical-align:super; margin-left:3px; color:var(--mut);}
+  .dark .time em{color:#a9a7a0;}
+  .vsbar{display:flex; align-items:center; gap:7px; padding-top:12px; border-top:1px solid var(--line); font-size:13px;}
+  .dark .vsbar{border-color:rgba(255,255,255,.14);}
+  .vslabel{font-weight:800; font-size:11px; color:var(--mut); letter-spacing:.05em;}
+  .opp{font-weight:700;}
+  .dot{color:var(--mut);}
+  .date{color:var(--mut); font-weight:500; white-space:nowrap;}
+  .chan{margin-left:auto; font-size:11px; font-weight:800; letter-spacing:.02em; background:var(--ink); color:#fff; border-radius:5px; padding:3px 7px; white-space:nowrap;}
+  .dark .chan{background:#fff; color:var(--ink);}
+  .chan.tbc{background:transparent; color:var(--mut); border:1.5px solid var(--line);}
+  .dark .chan.tbc{color:#a9a7a0; border-color:rgba(255,255,255,.2); background:transparent;}
+  .logo{display:inline-flex; align-items:center; margin-left:auto; flex-shrink:0;}
+  .logo-bbc{gap:2px;}
+  .logo-bbc b{width:15px; height:15px; background:var(--ink); color:#fff; font-weight:800; font-size:9px; display:flex; align-items:center; justify-content:center; border-radius:1.5px; line-height:1;}
+  .card.dark .logo-bbc b{background:#fff; color:var(--ink);}
+  .logo-itv{font-weight:800; font-size:16px; letter-spacing:-.03em; color:var(--ink); line-height:1;}
+  .card.dark .logo-itv{color:#fff;}
+  .mini .logo-bbc b{width:14px; height:14px; font-size:8.5px;}
+  .mini .logo-itv{font-size:15px;}
+
+  .block{padding:16px 20px 2px;}
+  .block-title{font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--mut); margin:0 0 8px;}
+  .mini{display:flex; align-items:center; gap:8px; padding:9px 0; border-top:1px solid var(--line); font-size:13px;}
+  .mini:first-of-type{border-top:none;}
+  .m-day{font-weight:800; width:32px; text-transform:uppercase;}
+  .m-time{font-weight:600; color:var(--mut); width:40px;}
+  .m-name{font-weight:700;}
+  .m-vs{color:var(--mut); font-size:11px;}
+  .m-opp{font-weight:500; white-space:nowrap;}
+  .mini .chan{font-size:10px; padding:2px 6px; margin-left:auto;}
+
+  .tables{display:flex; gap:11px; padding:8px 16px 4px;}
+  .tbl{flex:1; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 11px;}
+  .tbl-head{font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; gap:6px;}
+  .tbl-head em{font-style:normal; font-size:9.5px; font-weight:600; color:var(--mut); letter-spacing:.02em; text-transform:none; text-align:right; line-height:1.2;}
+  .trow{display:flex; align-items:center; gap:6px; padding:4px 0; font-size:12.5px;}
+  .trow.me{font-weight:800;}
+  .tpos{color:var(--mut); width:11px; font-weight:700; font-size:11px;}
+  .tteam{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .tgd{color:var(--mut); width:20px; text-align:right; font-size:11px;}
+  .tpts{font-weight:800; width:14px; text-align:right;}
+
+  .played-list{padding:14px 20px 4px;}
+  .played{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--mut); padding:4px 0;}
+  .played .name{font-weight:800; color:var(--ink); text-transform:uppercase; font-size:12px;}
+  .won{font-weight:800; color:#fff; background:var(--win); border-radius:4px; padding:1px 6px; font-size:11px;}
+  .drew{font-weight:800; color:#fff; background:#888; border-radius:4px; padding:1px 6px; font-size:11px;}
+  .lost{font-weight:800; color:#fff; background:#c0392b; border-radius:4px; padding:1px 6px; font-size:11px;}
+  .score{font-weight:600; color:var(--ink); white-space:nowrap;}
+
+  .card.done{opacity:.55;}
+
+  /* debug bar */
+  #debug-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:100;
+    background:rgba(22,21,20,.92); backdrop-filter:blur(8px);
+    color:#fff; font-family:'Archivo',sans-serif; font-size:12px; font-weight:600;
+    display:flex; align-items:center; gap:10px; padding:10px 16px;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  #debug-bar label{color:#a9a7a0; text-transform:uppercase; letter-spacing:.07em; font-size:10px;}
+  #debug-bar input[type=date]{
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
+    color:#fff; border-radius:6px; padding:3px 8px; font-size:12px; font-family:inherit;
+    cursor:pointer;
+  }
+  #debug-bar .reset{color:#a9a7a0; font-size:11px; text-decoration:underline; cursor:pointer; background:none; border:none; font-family:inherit;}
+</style>
+</head>
+<body>
+<main class="app" id="app">
+  <header class="app-head">
+    <h1 class="h1">Next<br />up</h1>
+    <div class="asof" id="asof-label">World Cup 2026<br /></div>
+  </header>
+  <section class="heroes" id="heroes"></section>
+  <section class="block" id="coming-up-section">
+    <h2 class="block-title">Coming up after</h2>
+    <div id="coming-up"></div>
+  </section>
+  <section class="block" style="padding-bottom:0;">
+    <h2 class="block-title">Standings</h2>
+  </section>
+  <section class="tables" id="tables"></section>
+  <section class="played-list" id="played-list"></section>
+</main>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────────────
+
+const FLAG = 'https://flagcdn.com';
+
+const TEAMS = {
+  england: { name:'England', short:'ENG', flag:'gb-eng', group:'L' },
+  korea:   { name:'South Korea', short:'KOR', flag:'kr',     group:'A' },
+};
+
+// Games in chronological order. result: 'W'/'D'/'L'/null
+const GAMES = [
+  { team:'korea',   iso:'2026-06-11', opp:'Czechia',      oppFlag:'cz', day:'Thursday', shortDay:'Thu', date:'11 June',  time:'2pm',  late:false, channel:'TBC',     result:'W', score:'2–1' },
+  { team:'england', iso:'2026-06-17', opp:'Croatia',      oppFlag:'hr', day:'Wednesday',shortDay:'Wed', date:'17 June',  time:'9pm',  late:false, channel:'ITV1',    result:null, score:null },
+  { team:'korea',   iso:'2026-06-19', opp:'Mexico',       oppFlag:'mx', day:'Friday',   shortDay:'Fri', date:'19 June',  time:'2am',  late:true,  channel:'TBC',     result:null, score:null },
+  { team:'england', iso:'2026-06-23', opp:'Ghana',        oppFlag:'gh', day:'Tuesday',  shortDay:'Tue', date:'23 June',  time:'9pm',  late:false, channel:'BBC One', result:null, score:null },
+  { team:'korea',   iso:'2026-06-25', opp:'South Africa', oppFlag:'za', day:'Thursday', shortDay:'Thu', date:'25 June',  time:'2am',  late:true,  channel:'TBC',     result:null, score:null },
+  { team:'england', iso:'2026-06-27', opp:'Panama',       oppFlag:'pa', day:'Saturday', shortDay:'Sat', date:'27 June',  time:'10pm', late:false, channel:'ITV1',    result:null, score:null },
+];
+
+const GROUPS = {
+  A: {
+    label:'Group A',
+    rows:[
+      { team:'Mexico',       flag:'mx', gd:'+2', pts:3 },
+      { team:'South Korea',  flag:'kr', gd:'+1', pts:3, me:true },
+      { team:'Czechia',      flag:'cz', gd:'−1', pts:0 },
+      { team:'South Africa', flag:'za', gd:'−2', pts:0 },
+    ],
+  },
+  L: {
+    label:'Group L',
+    rows:[
+      { team:'England', flag:'gb-eng', gd:'—', pts:0, me:true },
+      { team:'Croatia', flag:'hr',     gd:'—', pts:0 },
+      { team:'Ghana',   flag:'gh',     gd:'—', pts:0 },
+      { team:'Panama',  flag:'pa',     gd:'—', pts:0 },
+    ],
+  },
+};
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function parseDate(iso) {
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function today() {
+  const p = new URLSearchParams(location.search).get('date');
+  if (p) { const d = parseDate(p); if (!isNaN(d)) return d; }
+  const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+
+function daysBetween(from, to) {
+  return Math.round((to - from) / 86400000);
+}
+
+function countdown(gameDate, todayDate) {
+  const d = daysBetween(todayDate, gameDate);
+  if (d === 0) return 'today';
+  if (d === 1) return 'tomorrow';
+  return `in ${d}\ndays`;
+}
+
+function fmtAsOf(d) {
+  return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+}
+
+function prevDay(iso) {
+  const d = parseDate(iso);
+  d.setDate(d.getDate() - 1);
+  return {
+    long:  d.toLocaleDateString('en-GB', { weekday:'long' }),
+    short: d.toLocaleDateString('en-GB', { weekday:'short' }),
+  };
+}
+
+function chanHTML(channel, dark) {
+  if (!channel || channel === 'TBC') {
+    return `<span class="chan tbc">TBC</span>`;
+  }
+  if (channel.startsWith('BBC')) {
+    return `<span class="logo logo-bbc"><b>B</b><b>B</b><b>C</b></span>`;
+  }
+  if (channel.startsWith('ITV')) {
+    return `<span class="logo logo-itv">itv</span>`;
+  }
+  return `<span class="chan">${channel}</span>`;
+}
+
+function flagImg(code, cls, alt='') {
+  return `<img class="flag ${cls}" src="${FLAG}/${code}.svg" alt="${alt}" />`;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function render() {
+  const t = today();
+
+  // Split games per team into upcoming / played
+  const upcoming = { england:[], korea:[] };
+  const played   = { england:[], korea:[] };
+
+  for (const g of GAMES) {
+    const gd = parseDate(g.iso);
+    if (gd < t) played[g.team].push(g);
+    else upcoming[g.team].push(g);
+  }
+
+  // Header
+  document.getElementById('asof-label').innerHTML =
+    `World Cup 2026<br />as of ${fmtAsOf(t)}`;
+
+  // Hero cards
+  const heroOrder = ['england','korea'];
+  const heroHTML = heroOrder.map((teamKey, i) => {
+    const team = TEAMS[teamKey];
+    const next = upcoming[teamKey][0];
+    const dark = '';
+
+    if (!next) {
+      return `<article class="card ${dark} done">
+        <div class="card-top">
+          ${flagImg(team.flag,'flag-lg',team.name+' flag')}
+          <div class="team-block">
+            <span class="team">${team.name}</span>
+            <span class="grp">Group ${team.group}</span>
+          </div>
+          <span class="countdown">Group<br />stage<br />done</span>
+        </div>
+      </article>`;
+    }
+
+    const cd = countdown(parseDate(next.iso), t).replace('\n','<br />');
+    const displayDay = next.late ? prevDay(next.iso).long : next.day;
+    const dayHTML = `<span class="day">${displayDay}</span>`;
+    const timeHTML = next.late
+      ? `<span class="time">${next.time}<em>${next.shortDay.toUpperCase()}</em></span>`
+      : `<span class="time">${next.time}</span>`;
+
+    return `<article class="card ${dark}">
+      <div class="card-top">
+        ${flagImg(team.flag,'flag-lg',team.name+' flag')}
+        <div class="team-block">
+          <span class="team">${team.name}</span>
+          <span class="grp">Group ${team.group}</span>
+        </div>
+        <span class="countdown">${cd}</span>
+      </div>
+      <div class="when">
+        ${dayHTML}
+        ${timeHTML}
+      </div>
+      <div class="vsbar">
+        <span class="vslabel">VS</span>
+        ${flagImg(next.oppFlag,'flag-sm',next.opp+' flag')}
+        <span class="opp">${next.opp}</span>
+        <span class="dot">·</span>
+        <span class="date">${next.date}</span>
+        ${chanHTML(next.channel, dark)}
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('heroes').innerHTML = heroHTML;
+
+  // Coming up after — games after the next one, for both teams, sorted by date
+  const comingUp = [];
+  for (const teamKey of heroOrder) {
+    const after = upcoming[teamKey].slice(1);
+    for (const g of after) comingUp.push({ ...g, teamKey });
+  }
+  comingUp.sort((a,b) => a.iso.localeCompare(b.iso));
+
+  const cuSection = document.getElementById('coming-up-section');
+  if (comingUp.length === 0) {
+    cuSection.style.display = 'none';
+  } else {
+    cuSection.style.display = '';
+    document.getElementById('coming-up').innerHTML = comingUp.map(g => {
+      const miniDay = g.late ? prevDay(g.iso).short : g.shortDay;
+      return `<div class="mini">
+        <span class="m-day">${miniDay}</span>
+        <span class="m-time">${g.time}</span>
+        <span class="m-name">${TEAMS[g.teamKey].short}</span>
+        <span class="m-vs">v</span>
+        ${flagImg(g.oppFlag,'flag-xs')}
+        <span class="m-opp">${g.opp}</span>
+        ${chanHTML(g.channel, false)}
+      </div>`;
+    }).join('');
+  }
+
+  // Standings
+  document.getElementById('tables').innerHTML = ['L','A'].map(grpKey => {
+    const grp = GROUPS[grpKey];
+    const rows = grp.rows.map((r,i) =>
+      `<div class="trow${r.me?' me':''}">
+        <span class="tpos">${i+1}</span>
+        ${flagImg(r.flag,'flag-xs')}
+        <span class="tteam">${r.team}</span>
+        <span class="tgd">${r.gd}</span>
+        <span class="tpts">${r.pts}</span>
+      </div>`
+    ).join('');
+    const engNext = upcoming.england[0];
+    const korNext = upcoming.korea[0];
+    const noteL = engNext ? `kicks off ${engNext.shortDay}` : 'group stage done';
+    const noteA = `after matchday 1`;
+    const note = grpKey === 'L' ? noteL : noteA;
+    return `<div class="tbl">
+      <div class="tbl-head">${grp.label}<em>${note}</em></div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  // Played
+  const allPlayed = [];
+  for (const teamKey of ['korea','england']) {
+    for (const g of played[teamKey]) allPlayed.push({ ...g, teamKey });
+  }
+  allPlayed.sort((a,b) => b.iso.localeCompare(a.iso)); // most recent first
+
+  const playedEl = document.getElementById('played-list');
+  if (allPlayed.length === 0) {
+    playedEl.style.display = 'none';
+  } else {
+    playedEl.style.display = '';
+    playedEl.innerHTML = allPlayed.map(g => {
+      const resultClass = g.result === 'W' ? 'won' : g.result === 'D' ? 'drew' : g.result === 'L' ? 'lost' : '';
+      const resultLabel = g.result === 'W' ? 'WON' : g.result === 'D' ? 'DREW' : g.result === 'L' ? 'LOST' : '–';
+      const scoreHTML = g.score ? `<span class="score">${g.score}</span>` : '';
+      return `<div class="played">
+        ${flagImg(TEAMS[g.teamKey].flag,'flag-xs',TEAMS[g.teamKey].name+' flag')}
+        <span class="name">${TEAMS[g.teamKey].short}</span>
+        ${resultClass ? `<span class="${resultClass}">${resultLabel}</span>` : ''}
+        ${scoreHTML}
+        <span>v ${g.opp} · ${g.date}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── Debug bar ────────────────────────────────────────────────────────────────
+
+function initDebug() {
+  const params = new URLSearchParams(location.search);
+  const dateParam = params.get('date');
+  if (!dateParam) return;
+
+  const bar = document.createElement('div');
+  bar.id = 'debug-bar';
+  bar.innerHTML = `
+    <label>Simulating</label>
+    <input type="date" id="debug-date" value="${dateParam}" min="2026-06-11" max="2026-07-15" />
+    <button class="reset" id="debug-reset">use today</button>
+  `;
+  document.body.appendChild(bar);
+  document.querySelector('.app').style.paddingBottom = '60px';
+
+  document.getElementById('debug-date').addEventListener('change', e => {
+    const p = new URLSearchParams(location.search);
+    p.set('date', e.target.value);
+    history.replaceState(null, '', '?' + p.toString());
+    render();
+  });
+
+  document.getElementById('debug-reset').addEventListener('click', () => {
+    history.replaceState(null, '', location.pathname);
+    document.body.removeChild(bar);
+    document.querySelector('.app').style.paddingBottom = '';
+    render();
+  });
+}
+
+render();
+initDebug();
+</script>
+</body>
+</html>
